@@ -8,7 +8,6 @@ exports.findAddresses = (expectedOutput, codes) => {
       const intCode = new IntCodeProgram(codes, { state: { noun, verb } });
       intCode.run();
 
-      console.log({ verb, noun, zero: intCode.codes[0] });
       if (intCode.codes[0] === expectedOutput) {
         return 100 * noun + verb;
       }
