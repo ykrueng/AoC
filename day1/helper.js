@@ -1,4 +1,4 @@
-exports.getTotalFuel = mass => {
+exports.getFuelCount = mass => {
   if (typeof mass !== "number") return NaN;
   
   const base = Math.floor(mass / 3);
