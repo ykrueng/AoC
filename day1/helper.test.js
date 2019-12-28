@@ -16,4 +16,3 @@ describe("Fuel required to launch a module", () => {
     expect(getTotalFuelCount([0, 12, 14, 1969, 100756])).toEqual(34241);
   });
 });
-
