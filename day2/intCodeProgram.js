@@ -9,10 +9,10 @@ function IntCodeProgram(input, config) {
   this.pointer = 0;
 
   const { state } = config;
-  if (state.noun) {
+  if (state && state.noun) {
     this.codes[1] = state.noun;
   }
-  if (state.verb) {
+  if (state && state.verb) {
     this.codes[2] = state.verb;
   }
 }
