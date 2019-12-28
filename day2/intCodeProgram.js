@@ -8,12 +8,14 @@ function IntCodeProgram(input, config) {
   this.codes = [...input];
   this.pointer = 0;
 
-  const { state } = config;
-  if (state && state.noun) {
-    this.codes[1] = state.noun;
-  }
-  if (state && state.verb) {
-    this.codes[2] = state.verb;
+  if (config) {
+    const { state } = config;
+    if (state && state.noun) {
+      this.codes[1] = state.noun;
+    }
+    if (state && state.verb) {
+      this.codes[2] = state.verb;
+    }
   }
 }
 
