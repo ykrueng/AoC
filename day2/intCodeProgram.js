@@ -1,4 +1,4 @@
-function IntCodeProgram(input) {
+function IntCodeProgram(input, config) {
   // Check for invalid input
   const isInvalid =
     !input.length || input.some(code => typeof code !== "number");
@@ -7,6 +7,12 @@ function IntCodeProgram(input) {
   // Initialized the program
   this.codes = [...input];
   this.pointer = 0;
+
+  const { state } = config;
+  if (state && state.length == 2) {
+    this.codes[1] = state[0];
+    this.codes[2] = state[1];
+  }
 }
 
 IntCodeProgram.prototype.run = function() {
