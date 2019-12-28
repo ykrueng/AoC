@@ -11,7 +11,9 @@ const inputArr = inputStr
   .map(e => parseInt(e));
 
 exports.dayTwoPartOne = () => {
-  const program = new IntCodeProgram(inputArr, { state: [12, 2] });
+  const program = new IntCodeProgram(inputArr, {
+    state: { noun: 12, verb: 2 }
+  });
   program.run();
   const valueAt0 = program.codes[0];
 

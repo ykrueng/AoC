@@ -9,9 +9,11 @@ function IntCodeProgram(input, config) {
   this.pointer = 0;
 
   const { state } = config;
-  if (state && state.length == 2) {
-    this.codes[1] = state[0];
-    this.codes[2] = state[1];
+  if (state.noun) {
+    this.codes[1] = state.noun;
+  }
+  if (state.verb) {
+    this.codes[2] = state.verb;
   }
 }
 
