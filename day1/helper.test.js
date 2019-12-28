@@ -1,4 +1,4 @@
-const { getFuelCount } = require("./helper");
+const { getFuelCount, getTotalFuelCount } = require("./helper");
 
 describe("Fuel required to launch a module", () => {
   test("getModuleTotalFuel", () => {
@@ -8,6 +8,12 @@ describe("Fuel required to launch a module", () => {
     expect(getFuelCount(1969)).toEqual(654);
     expect(getFuelCount(100756)).toEqual(33583);
     expect(getFuelCount("100756")).toEqual(NaN);
+  });
+});
+
+describe("Fuel required to launch a module", () => {
+  test("getModuleTotalFuel", () => {
+    expect(getTotalFuelCount([0, 12, 14, 1969, 100756])).toEqual(34241);
   });
 });
 
