@@ -1,5 +1,5 @@
 const { dayOnePartOne, dayOnePartTwo } = require("./day1");
-const { dayTwoPartOne } = require("./day2");
+const { dayTwoPartOne, dayTwoPartTwo } = require("./day2");
 
 function main() {
   console.log("Advent of Code 2019");
@@ -18,6 +18,11 @@ function main() {
 
   console.log("Day 2 part 1");
   console.log(dayTwoPartOne()); //10566835
+  console.log("===================");
+  console.log("");
+
+  console.log("Day 2 part 2");
+  console.log(dayTwoPartTwo()); //2347
 }
 
 main();
