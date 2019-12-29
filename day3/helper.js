@@ -1,3 +1,14 @@
+exports.getMinSteps = str => {
+  const { wire1, wire2 } = parseWires(str);
+
+  if (wire1 === null || wire2 === null) throw "Invalid input string";
+
+  const pathMap = getPathMap(wire1);
+  const shortest = traversePath(wire2, pathMap);
+
+  return shortest;
+};
+
 exports.getClosestDistance = str => {
   const { wire1, wire2 } = parseWires(str);
 
@@ -98,4 +109,114 @@ function getWirePath(wire) {
   }
 
   return pathSet;
+}
+
+function getPathMap(wire) {
+  const pathMap = new Map();
+  if (wire.length === 0) return pathMap;
+
+  let currentNode = [0, 0];
+  let stepCount = 0;
+
+  for (move of wire) {
+    addNodes(move);
+  }
+
+  function addNodes(move) {
+    const { direction, distance } = parseMove(move);
+
+    if (direction === null || distance === null) {
+      throw `Invalid move: ${move}`;
+    }
+
+    for (i = 0; i < distance; i++) {
+      addNode(direction);
+    }
+  }
+
+  function addNode(direction) {
+    switch (direction) {
+      case "R":
+        currentNode[0] += 1;
+        break;
+      case "L":
+        currentNode[0] -= 1;
+        break;
+      case "U":
+        currentNode[1] += 1;
+        break;
+      case "D":
+        currentNode[1] -= 1;
+        break;
+    }
+    stepCount += 1;
+    const distance = Math.abs(currentNode[0]) + Math.abs(currentNode[1]);
+
+    const nodes = pathMap.get(distance) || [];
+
+    pathMap.set(distance, [...nodes, [[...currentNode], stepCount]]);
+  }
+
+  return pathMap;
+}
+
+function traversePath(wire, pathMap) {
+  if (wire.length === 0) return NaN;
+
+  let currentNode = [0, 0];
+  let stepCount = 0;
+  let shortest = null;
+
+  for (move of wire) {
+    traverseMoves(move);
+  }
+
+  function traverseMoves(move) {
+    const { direction, distance } = parseMove(move);
+
+    if (direction === null || distance === null) {
+      throw `Invalid move: ${move}`;
+    }
+
+    for (i = 0; i < distance; i++) {
+      traverseMove(direction);
+    }
+  }
+
+  function traverseMove(direction) {
+    switch (direction) {
+      case "R":
+        currentNode[0] += 1;
+        break;
+      case "L":
+        currentNode[0] -= 1;
+        break;
+      case "U":
+        currentNode[1] += 1;
+        break;
+      case "D":
+        currentNode[1] -= 1;
+        break;
+    }
+    stepCount += 1;
+    const distance = Math.abs(currentNode[0]) + Math.abs(currentNode[1]);
+    const sameDistance = pathMap.get(distance);
+
+    if (!sameDistance) {
+      return;
+    }
+
+    const intersect = sameDistance.find(
+      node => node[0][0] === currentNode[0] && node[0][1] === currentNode[1]
+    );
+
+    if (intersect) {
+      const totalSteps = intersect[1] + stepCount;
+      if (!shortest || shortest > totalSteps) {
+        shortest = totalSteps;
+      }
+    }
+  }
+
+  return shortest;
 }
