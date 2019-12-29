@@ -8,6 +8,7 @@ function IntCodeProgram(input, config = {}) {
   this.codes = [...input];
   this.pointer = 0;
   this.input = typeof config.input === "number" ? config.input : null;
+  this.phase = typeof config.phase === "number" ? config.phase : null;
   this.halted = false;
 
   if (config) {
@@ -84,9 +85,18 @@ IntCodeProgram.prototype.opCode2 = function() {
 };
 
 IntCodeProgram.prototype.opCode3 = function() {
-  if (this.input) {
+  let input = null;
+  if (typeof this.phase === "number") {
+    input = this.phase;
+    this.phase = null;
+  } else if (typeof this.input === "number") {
+    input = this.input;
+    this.input = null;
+  }
+
+  if (typeof input === "number") {
     const params = this.codes.slice(this.pointer + 1, this.pointer + 2);
-    this.codes[params[0]] = this.input;
+    this.codes[params[0]] = input;
     this.pointer += 2;
   } else {
     this.halted = true;
