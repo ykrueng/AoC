@@ -23,10 +23,16 @@ const inputs = [
 describe("Opcode1", () => {
   let intCode1 = null;
   let intCode2 = null;
+  let input3 = [...inputs[1][0]];
+  input3[0] = 1001;
+  let input4 = [...inputs[2][0]];
+  input4[0] = 101;
 
   beforeEach(() => {
     intCode1 = new IntCodeProgram(inputs[1][0]);
     intCode2 = new IntCodeProgram(inputs[2][0]);
+    intCode3 = new IntCodeProgram(input3);
+    intCode4 = new IntCodeProgram(input4);
   });
 
   it("should adds together numbers read from two positions and stores the result in a third position", () => {
@@ -37,6 +43,14 @@ describe("Opcode1", () => {
     resultPos = intCode2.codes[3];
     intCode2.opCode1();
     expect(intCode2.codes[resultPos]).toEqual(2);
+
+    resultPos = intCode3.codes[3];
+    intCode3.opCode1();
+    expect(intCode3.codes[resultPos]).toEqual(40);
+
+    resultPos = intCode4.codes[3];
+    intCode4.opCode1();
+    expect(intCode4.codes[resultPos]).toEqual(101);
   });
 
   it("should move its pointer 4 steps ahead", () => {
@@ -51,10 +65,16 @@ describe("Opcode1", () => {
 describe("Opcode2", () => {
   let intCode1 = null;
   let intCode2 = null;
+  let input3 = [...inputs[3][0]];
+  input3[0] = 1102;
+  let input4 = [...inputs[4][0]];
+  input4[0] = 102;
 
   beforeEach(() => {
     intCode1 = new IntCodeProgram(inputs[3][0]);
     intCode2 = new IntCodeProgram(inputs[4][0]);
+    intCode3 = new IntCodeProgram(input3);
+    intCode4 = new IntCodeProgram(input4);
   });
 
   it("should multiply together numbers read from two positions and stores the result in a third position", () => {
@@ -65,6 +85,14 @@ describe("Opcode2", () => {
     resultPos = intCode2.codes[3];
     intCode2.opCode2();
     expect(intCode2.codes[resultPos]).toEqual(99 * 99);
+
+    resultPos = intCode3.codes[3];
+    intCode3.opCode2();
+    expect(intCode3.codes[resultPos]).toEqual(0);
+
+    resultPos = intCode4.codes[3];
+    intCode4.opCode2();
+    expect(intCode4.codes[resultPos]).toEqual(99 * 4);
   });
 
   it("should move its pointer 4 steps ahead", () => {
@@ -93,30 +121,6 @@ describe("Opcode3", () => {
   });
 
   it("should move its pointer 4 steps ahead", () => {
-    let intCode = new IntCodeProgram([3, 0, 99], { input: 6 });
-
-    intCode.opCode3();
-    expect(intCode.pointer).toEqual(2);
-  });
-});
-
-describe("Opcode3", () => {
-  it("should halt the program while waiting for input", () => {
-    let intCode = new IntCodeProgram([3, 0, 99]);
-
-    intCode.opCode3();
-    expect(intCode.halted).toEqual(true);
-  });
-
-  it("should saves its input to the position given by its only parameter", () => {
-    let intCode = new IntCodeProgram([3, 0, 99], { input: 6 });
-    let resultPos = intCode.codes[1];
-
-    intCode.opCode3();
-    expect(intCode.codes[resultPos]).toEqual(6);
-  });
-
-  it("should move its pointer 2 steps ahead", () => {
     let intCode = new IntCodeProgram([3, 0, 99], { input: 6 });
 
     intCode.opCode3();
@@ -134,8 +138,12 @@ describe("Opcode4", () => {
     expect(intCode.halted).toEqual(true);
   });
   it("should return an output", () => {
-    const result = intCode.opCode4();
+    let result = intCode.opCode4();
     expect(result).toEqual(99);
+
+    intCode = new IntCodeProgram([104, 29, 99]);
+    result = intCode.opCode4();
+    expect(result).toEqual(29);
   });
 
   it("should move its pointer 2 steps ahead", () => {

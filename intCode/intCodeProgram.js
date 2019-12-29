@@ -25,14 +25,11 @@ IntCodeProgram.prototype.run = function() {
   const validInstruction = [1, 2, 3, 4, 99];
 
   while (this.pointer < this.codes.length && !this.halted) {
-    const instruction = this.codes[this.pointer];
+    const instruction = Math.floor(this.codes[this.pointer] % 100);
 
     if (validInstruction.includes(instruction)) {
       const output = this[`opCode${instruction}`]();
-      if (output) {
-        console.log({ output });
-        return output;
-      }
+      if (typeof output === "number") return output;
     } else {
       console.error(
         `Encountered an invalid instruction: ${this.codes[this.pointer]}`
@@ -49,7 +46,7 @@ IntCodeProgram.prototype.continue = function(input) {
   }
 
   this.halted = false;
-  this.run();
+  return this.run();
 };
 
 IntCodeProgram.prototype.getModes = function() {
@@ -65,16 +62,24 @@ IntCodeProgram.prototype.getModes = function() {
 };
 
 IntCodeProgram.prototype.opCode1 = function() {
+  const modes = this.getModes();
   const params = this.codes.slice(this.pointer + 1, this.pointer + 4);
-  this.codes[params[2]] = this.codes[params[0]] + this.codes[params[1]];
 
+  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
+  const param2 = modes && modes[1] === "1" ? params[1] : this.codes[params[1]];
+
+  this.codes[params[2]] = param1 + param2;
   this.pointer += 4;
 };
 
 IntCodeProgram.prototype.opCode2 = function() {
+  const modes = this.getModes();
   const params = this.codes.slice(this.pointer + 1, this.pointer + 4);
-  this.codes[params[2]] = this.codes[params[0]] * this.codes[params[1]];
 
+  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
+  const param2 = modes && modes[1] === "1" ? params[1] : this.codes[params[1]];
+
+  this.codes[params[2]] = param1 * param2;
   this.pointer += 4;
 };
 
@@ -89,10 +94,13 @@ IntCodeProgram.prototype.opCode3 = function() {
 };
 
 IntCodeProgram.prototype.opCode4 = function() {
+  const modes = this.getModes();
   const params = this.codes.slice(this.pointer + 1, this.pointer + 2);
+  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
+
   this.pointer += 2;
   this.halted = true;
-  return this.codes[params[0]];
+  return param1;
 };
 
 IntCodeProgram.prototype.opCode99 = function() {
