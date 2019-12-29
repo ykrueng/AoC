@@ -1,5 +1,7 @@
 const IntCodeProgram = require("./intCodeProgram");
 
+// TODO: add test for opCode5, opcode6, opcode7, opcode8
+
 const inputs = [
   [[0], [0]],
   [
