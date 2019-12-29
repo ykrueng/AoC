@@ -1,4 +1,4 @@
-exports.getClosestIntersection = str => {
+exports.getClosestDistance = str => {
   const { wire1, wire2 } = parseWires(str);
 
   if (wire1 === null || wire2 === null) throw "Invalid input string";
