@@ -1,10 +1,6 @@
 const IntCodeProgram = require("../intCode/intCodeProgram");
 
-exports.runDiagnosticProgram = codes => {
-  const config = {
-    input: 1
-  };
-
+exports.runDiagnosticProgram = (codes, config) => {
   const intCode = new IntCodeProgram(codes, config);
 
   let result = [intCode.run()];
