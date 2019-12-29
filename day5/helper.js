@@ -7,15 +7,18 @@ exports.runDiagnosticProgram = codes => {
 
   const intCode = new IntCodeProgram(codes, config);
 
-  let result = intCode.run();
+  let result = [intCode.run()];
 
   while (intCode.halted) {
     const currentResult = intCode.continue();
     if (typeof currentResult === "number") {
-      console.log("result: ", currentResult);
-      result = currentResult;
+      result.push(currentResult);
     }
   }
 
-  return result;
+  const isValid = result
+    .slice(0, result.length - 1)
+    .every(number => number === 0);
+
+  return isValid && result[result.length - 1];
 };
