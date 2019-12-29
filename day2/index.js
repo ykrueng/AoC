@@ -1,4 +1,4 @@
-const IntCodeProgram = require("./intCodeProgram");
+const IntCodeProgram = require("../intCode/intCodeProgram");
 const { findAddresses } = require("./helper");
 
 const { getInputArray } = require("../utility");

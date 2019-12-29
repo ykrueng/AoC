@@ -1,4 +1,4 @@
-const IntCodeProgram = require("./intCodeProgram");
+const IntCodeProgram = require("../intCode/intCodeProgram");
 
 exports.findAddresses = (expectedOutput, codes) => {
   let noun = 0;
