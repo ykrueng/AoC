@@ -76,6 +76,76 @@ describe("Opcode2", () => {
   });
 });
 
+describe("Opcode3", () => {
+  it("should halt the program while waiting for input", () => {
+    let intCode = new IntCodeProgram([3, 0, 99]);
+
+    intCode.opCode3();
+    expect(intCode.halted).toEqual(true);
+  });
+
+  it("should saves its input to the position given by its only parameter", () => {
+    let intCode = new IntCodeProgram([3, 0, 99], { input: 6 });
+    let resultPos = intCode.codes[1];
+
+    intCode.opCode3();
+    expect(intCode.codes[resultPos]).toEqual(6);
+  });
+
+  it("should move its pointer 4 steps ahead", () => {
+    let intCode = new IntCodeProgram([3, 0, 99], { input: 6 });
+
+    intCode.opCode3();
+    expect(intCode.pointer).toEqual(2);
+  });
+});
+
+describe("Opcode3", () => {
+  it("should halt the program while waiting for input", () => {
+    let intCode = new IntCodeProgram([3, 0, 99]);
+
+    intCode.opCode3();
+    expect(intCode.halted).toEqual(true);
+  });
+
+  it("should saves its input to the position given by its only parameter", () => {
+    let intCode = new IntCodeProgram([3, 0, 99], { input: 6 });
+    let resultPos = intCode.codes[1];
+
+    intCode.opCode3();
+    expect(intCode.codes[resultPos]).toEqual(6);
+  });
+
+  it("should move its pointer 2 steps ahead", () => {
+    let intCode = new IntCodeProgram([3, 0, 99], { input: 6 });
+
+    intCode.opCode3();
+    expect(intCode.pointer).toEqual(2);
+  });
+});
+
+describe("Opcode4", () => {
+  let intCode;
+  beforeEach(() => {
+    intCode = new IntCodeProgram([4, 2, 99]);
+  });
+  it("should halt the program to send output", () => {
+    intCode.opCode4();
+    expect(intCode.halted).toEqual(true);
+  });
+  it("should return an output", () => {
+    const result = intCode.opCode4();
+    expect(result).toEqual(99);
+  });
+
+  it("should move its pointer 2 steps ahead", () => {
+    let intCode = new IntCodeProgram([3, 0, 99], { input: 6 });
+
+    intCode.opCode3();
+    expect(intCode.pointer).toEqual(2);
+  });
+});
+
 describe("run command", () => {
   it("should produce a corect final code", () => {
     inputs.forEach(input => {
@@ -93,5 +163,52 @@ describe("run command", () => {
 
       expect(program.pointer).toEqual(input[0].length);
     });
+  });
+  it("should halt to send output", () => {
+    let intCode = new IntCodeProgram([4, 2, 99]);
+
+    const result = intCode.run();
+    expect(result).toEqual(99);
+    expect(intCode.halted).toEqual(true);
+    expect(intCode.pointer).toEqual(2);
+  });
+});
+
+describe("continue command", () => {
+  it("should resume the program", () => {
+    let intCode = new IntCodeProgram([3, 0, 99]);
+    let resultPos = intCode.codes[1];
+
+    intCode.opCode3();
+    intCode.continue(7);
+    expect(intCode.halted).toEqual(false);
+    expect(intCode.codes[resultPos]).toEqual(7);
+
+    intCode = new IntCodeProgram([4, 2, 99]);
+    resultPos = intCode.codes[1];
+
+    intCode.opCode4();
+    intCode.continue();
+    expect(intCode.halted).toEqual(false);
+  });
+});
+
+describe("getModes method", () => {
+  it("should return instruction mode", () => {
+    let intCode = new IntCodeProgram([3, 0, 99]);
+    let modes = intCode.getModes();
+    expect(modes).toEqual("");
+
+    intCode = new IntCodeProgram([1001, 4, 4, 99, 0, 0]);
+    modes = intCode.getModes();
+    expect(modes).toEqual("01");
+
+    intCode = new IntCodeProgram([1101, 4, 4, 99, 0, 0]);
+    modes = intCode.getModes();
+    expect(modes).toEqual("11");
+
+    intCode = new IntCodeProgram([104, 4, 4, 99, 0, 0]);
+    modes = intCode.getModes();
+    expect(modes).toEqual("1");
   });
 });
