@@ -9,6 +9,7 @@ function IntCodeProgram(input, config = {}) {
   this.pointer = 0;
   this.input = typeof config.input === "number" ? config.input : null;
   this.phase = typeof config.phase === "number" ? config.phase : null;
+  this.active = false;
   this.halted = false;
 
   if (config) {
@@ -24,6 +25,7 @@ function IntCodeProgram(input, config = {}) {
 
 IntCodeProgram.prototype.run = function() {
   const validInstruction = [1, 2, 3, 4, 5, 6, 7, 8, 99];
+  this.active = true;
 
   while (this.pointer < this.codes.length && !this.halted) {
     const instruction = Math.floor(this.codes[this.pointer] % 100);
@@ -165,6 +167,7 @@ IntCodeProgram.prototype.opCode8 = function() {
 
 IntCodeProgram.prototype.opCode99 = function() {
   this.pointer = this.codes.length;
+  this.active = false;
 };
 
 module.exports = IntCodeProgram;

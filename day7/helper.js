@@ -1,6 +1,8 @@
 const IntCodeProgram = require("../intCode/intCodeProgram");
 
 exports.runACS = (codes, phases, initialInput = 0) => {
+  let brokenCode = false;
+
   let intCodes = phases.map((phase, i) => {
     const config = {
       phase,
@@ -10,25 +12,43 @@ exports.runACS = (codes, phases, initialInput = 0) => {
   });
 
   let lastOutput = null;
-  intCodes.forEach(intCode => {
-    let output = intCode.run();
-    if (!output) {
-      output = intCode.continue(lastOutput);
+  for (let i = 0; i < intCodes.length; i++) {
+    let output = intCodes[i].run();
+    if (typeof output !== "number") {
+      output = intCodes[i].continue(lastOutput);
+      if (!output) {
+        brokenCode = true;
+        break;
+      }
     }
-    intCode.continue();
+    intCodes[i].continue();
     lastOutput = output;
-  });
+  }
 
-  return lastOutput;
+  while (intCodes[intCodes.length - 1].active && !brokenCode) {
+    for (let i = 0; i < intCodes.length; i++) {
+      let output = intCodes[i].continue(lastOutput);
+      if (typeof output !== "number") {
+        brokenCode = true;
+        break;
+      }
+      lastOutput = output;
+      intCodes[i].continue();
+    }
+  }
+
+  return brokenCode ? NaN : lastOutput;
 };
 
-exports.findMaxThruster = codes => {
+exports.findMaxThruster = (codes, feedback = false) => {
   let maxThruster = 0;
 
-  const possiblePhases = generatePhases([0, 1, 2, 3, 4]);
+  const possiblePhases = generatePhases(
+    feedback ? [5, 6, 7, 8, 9] : [0, 1, 2, 3, 4]
+  );
   possiblePhases.forEach(phase => {
     const output = this.runACS(codes, phase);
-    if (maxThruster < output) {
+    if (!isNaN(output) && maxThruster < output) {
       maxThruster = output;
     }
   });
