@@ -1,21 +1,14 @@
-const fs = require("fs");
-const path = require("path");
 const { getTotalFuelCount, getTotalFinalFuelCount } = require("./helper");
+const { getInputArray } = require("../utility");
 
-// read the input file
-const inputStr = fs.readFileSync(path.join(__dirname, "./input.txt"), "utf-8");
-// convert input string into array
-const inputArr = inputStr
-  .trim()
-  .split("\n")
-  .map(e => parseInt(e));
+const arr = getInputArray("day1/input.txt");
 
 exports.dayOnePartOne = () => {
-  const fuel = getTotalFuelCount(inputArr);
+  const fuel = getTotalFuelCount(arr);
   return `The sum of the fuel requirements for all of the modules on the spacecraft is: ${fuel}`;
 };
 
 exports.dayOnePartTwo = () => {
-  const fuel = getTotalFinalFuelCount(inputArr);
+  const fuel = getTotalFinalFuelCount(arr);
   return `The sum of the fuel requirements for all of the modules on the spacecraft when also taking into account the mass of the added fuel is: ${fuel}`;
 };

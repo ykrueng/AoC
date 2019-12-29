@@ -1,15 +1,9 @@
-const fs = require("fs");
-const path = require("path");
 const IntCodeProgram = require("./intCodeProgram");
 const { findAddresses } = require("./helper");
 
-// read the input file
-const inputStr = fs.readFileSync(path.join(__dirname, "./input.txt"), "utf-8");
-// convert input string into array
-const inputArr = inputStr
-  .trim()
-  .split(",")
-  .map(e => parseInt(e));
+const { getInputArray } = require("../utility");
+
+const inputArr = getInputArray("day2/input.txt", ",");
 
 exports.dayTwoPartOne = () => {
   const program = new IntCodeProgram(inputArr, {
