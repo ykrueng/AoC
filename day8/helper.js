@@ -36,3 +36,44 @@ exports.decodeSpaceImage = (strCodes, dimension = [25, 6]) => {
 
   return oneCount * twoCount;
 };
+
+exports.decodeMessage = (strCodes, dimension = [25, 6]) => {
+  const [width, height] = dimension;
+  const layerLength = width * height;
+
+  let output = "";
+  let row = 1;
+
+  for (let i = 0; i < layerLength; i++) {
+    if (row * width === i) {
+      output += "\n";
+      row++;
+    }
+
+    let layer = 1;
+    let color = strCodes[i];
+
+    while (color === "2") {
+      if (layer * layerLength + i >= strCodes.length) break;
+      color = strCodes[layer * layerLength + i];
+      layer++;
+    }
+    output += color;
+  }
+  return output;
+};
+
+exports.paintMessage = strCodes => {
+  const message = this.decodeMessage(strCodes);
+  let image = "";
+  for (let i = 0; i < message.length; i++) {
+    if (message[i] === "0") {
+      image += " ";
+    } else if (message[i] === "1") {
+      image += "0";
+    } else {
+      image += message[i];
+    }
+  }
+  console.log(image);
+};
