@@ -1,7 +1,7 @@
 const IntCodeProgram = require("../intCode/intCodeProgram");
 
-exports.runBOOST = codes => {
-  const intCode = new IntCodeProgram(codes, { input: 1 });
+exports.runBOOST = (codes, input) => {
+  const intCode = new IntCodeProgram(codes, { input });
 
   let current = intCode.run();
   let output = null;
