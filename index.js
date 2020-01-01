@@ -6,7 +6,7 @@ const { dayFivePartOne, dayFivePartTwo } = require("./day5");
 const { daySixPartOne, daySixPartTwo } = require("./day6");
 const { daySevenPartOne, daySevenPartTwo } = require("./day7");
 const { day8Part1, day8Part2 } = require("./day8");
-const { dayNinePartOne } = require("./day9");
+const { dayNinePartOne, dayNinePartTwo } = require("./day9");
 
 function main() {
   console.log("Advent of Code 2019");
@@ -94,12 +94,12 @@ function main() {
   console.log("");
 
   console.log("Day 9 part 1");
-  console.log(dayNinePartOne(1)); //2870072642
+  console.log(dayNinePartOne()); //2870072642
   console.log("===================");
   console.log("");
 
   console.log("Day 9 part 2");
-  console.log(dayNinePartOne(2)); //58534
+  console.log(dayNinePartTwo()); //58534
 }
 
 main();

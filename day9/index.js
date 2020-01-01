@@ -3,7 +3,12 @@ const { runBOOST } = require("./helper");
 
 const inputArr = getInputArray("day9/input.txt", ",");
 
-exports.dayNinePartOne = input => {
-  const output = runBOOST(inputArr, input);
-  return `The BOOST keycode that intCode produce is: ${output}`;
+exports.dayNinePartOne = () => {
+  const output = runBOOST(inputArr, 1);
+  return `After running the BOOST program in test boost mode, the coordinates of the distress signal is: ${output}`;
+};
+
+exports.dayNinePartTwo = () => {
+  const output = runBOOST(inputArr, 2);
+  return `After running the BOOST program in sensor boost mode, the coordinates of the distress signal is: ${output}`;
 };
