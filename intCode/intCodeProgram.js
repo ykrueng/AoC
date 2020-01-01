@@ -11,6 +11,7 @@ function IntCodeProgram(input, config = {}) {
   this.phase = typeof config.phase === "number" ? config.phase : null;
   this.active = false;
   this.halted = false;
+  this.base = 0;
 
   if (config) {
     const { state } = config;
@@ -24,7 +25,7 @@ function IntCodeProgram(input, config = {}) {
 }
 
 IntCodeProgram.prototype.run = function() {
-  const validInstruction = [1, 2, 3, 4, 5, 6, 7, 8, 99];
+  const validInstruction = [1, 2, 3, 4, 5, 6, 7, 8, 9, 99];
   this.active = true;
 
   while (this.pointer < this.codes.length && !this.halted) {
@@ -64,25 +65,49 @@ IntCodeProgram.prototype.getModes = function() {
     .join("");
 };
 
+IntCodeProgram.prototype.getParam = function(index, mode) {
+  const address = this.codes[this.pointer + index];
+  if (!mode) return this.codes[address];
+
+  switch (mode) {
+    case "1":
+      return address;
+    case "2":
+      return this.codes[address + this.base];
+    case "0":
+    default:
+      return this.codes[address];
+  }
+};
+
+IntCodeProgram.prototype.write = function(value, index, mode) {
+  const address = this.codes[this.pointer + index];
+  switch (mode) {
+    case "2":
+      this.codes[address + this.base] = value;
+      break;
+    case "0":
+    default:
+      this.codes[address] = value;
+      break;
+  }
+};
+
 IntCodeProgram.prototype.opCode1 = function() {
   const modes = this.getModes();
-  const params = this.codes.slice(this.pointer + 1, this.pointer + 4);
+  const param1 = this.getParam(1, modes && modes[0]);
+  const param2 = this.getParam(2, modes && modes[1]);
 
-  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
-  const param2 = modes && modes[1] === "1" ? params[1] : this.codes[params[1]];
-
-  this.codes[params[2]] = param1 + param2;
+  this.write(param1 + param2, 3, modes[2]);
   this.pointer += 4;
 };
 
 IntCodeProgram.prototype.opCode2 = function() {
   const modes = this.getModes();
-  const params = this.codes.slice(this.pointer + 1, this.pointer + 4);
+  const param1 = this.getParam(1, modes && modes[0]);
+  const param2 = this.getParam(2, modes && modes[1]);
 
-  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
-  const param2 = modes && modes[1] === "1" ? params[1] : this.codes[params[1]];
-
-  this.codes[params[2]] = param1 * param2;
+  this.write(param1 * param2, 3, modes[2]);
   this.pointer += 4;
 };
 
@@ -97,8 +122,8 @@ IntCodeProgram.prototype.opCode3 = function() {
   }
 
   if (typeof input === "number") {
-    const params = this.codes.slice(this.pointer + 1, this.pointer + 2);
-    this.codes[params[0]] = input;
+    const modes = this.getModes();
+    this.write(input, 1, modes[0]);
     this.pointer += 2;
   } else {
     this.halted = true;
@@ -107,18 +132,16 @@ IntCodeProgram.prototype.opCode3 = function() {
 
 IntCodeProgram.prototype.opCode4 = function() {
   const modes = this.getModes();
-  const params = this.codes.slice(this.pointer + 1, this.pointer + 2);
-  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
-
+  const param1 = this.getParam(1, modes && modes[0]);
   this.pointer += 2;
   this.halted = true;
   return param1;
 };
+
 IntCodeProgram.prototype.opCode5 = function() {
   const modes = this.getModes();
-  const params = this.codes.slice(this.pointer + 1, this.pointer + 3);
-  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
-  const param2 = modes && modes[1] === "1" ? params[1] : this.codes[params[1]];
+  const param1 = this.getParam(1, modes && modes[0]);
+  const param2 = this.getParam(2, modes && modes[1]);
 
   if (param1 !== 0) {
     this.pointer = param2;
@@ -126,11 +149,11 @@ IntCodeProgram.prototype.opCode5 = function() {
     this.pointer += 3;
   }
 };
+
 IntCodeProgram.prototype.opCode6 = function() {
   const modes = this.getModes();
-  const params = this.codes.slice(this.pointer + 1, this.pointer + 3);
-  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
-  const param2 = modes && modes[1] === "1" ? params[1] : this.codes[params[1]];
+  const param1 = this.getParam(1, modes && modes[0]);
+  const param2 = this.getParam(2, modes && modes[1]);
 
   if (param1 === 0) {
     this.pointer = param2;
@@ -138,31 +161,31 @@ IntCodeProgram.prototype.opCode6 = function() {
     this.pointer += 3;
   }
 };
+
 IntCodeProgram.prototype.opCode7 = function() {
   const modes = this.getModes();
-  const params = this.codes.slice(this.pointer + 1, this.pointer + 4);
-  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
-  const param2 = modes && modes[1] === "1" ? params[1] : this.codes[params[1]];
+  const param1 = this.getParam(1, modes && modes[0]);
+  const param2 = this.getParam(2, modes && modes[1]);
 
-  if (param1 < param2) {
-    this.codes[params[2]] = 1;
-  } else {
-    this.codes[params[2]] = 0;
-  }
+  this.write(param1 < param2 ? 1 : 0, 3, modes[2]);
   this.pointer += 4;
 };
+
 IntCodeProgram.prototype.opCode8 = function() {
   const modes = this.getModes();
-  const params = this.codes.slice(this.pointer + 1, this.pointer + 4);
-  const param1 = modes && modes[0] === "1" ? params[0] : this.codes[params[0]];
-  const param2 = modes && modes[1] === "1" ? params[1] : this.codes[params[1]];
+  const param1 = this.getParam(1, modes && modes[0]);
+  const param2 = this.getParam(2, modes && modes[1]);
 
-  if (param1 === param2) {
-    this.codes[params[2]] = 1;
-  } else {
-    this.codes[params[2]] = 0;
-  }
+  this.write(param1 === param2 ? 1 : 0, 3, modes[2]);
   this.pointer += 4;
+};
+
+IntCodeProgram.prototype.opCode9 = function() {
+  const modes = this.getModes();
+  const param1 = this.getParam(1, modes && modes[0]);
+
+  this.base += param1;
+  this.pointer += 2;
 };
 
 IntCodeProgram.prototype.opCode99 = function() {
